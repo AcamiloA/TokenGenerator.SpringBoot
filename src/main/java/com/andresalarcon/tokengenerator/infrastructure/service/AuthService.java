@@ -1,5 +1,6 @@
 package com.andresalarcon.tokengenerator.infrastructure.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,8 @@ import com.andresalarcon.tokengenerator.application.dto.LoginRequest;
 import com.andresalarcon.tokengenerator.application.dto.bearerResponses.BearerSuccessResponse;
 import com.andresalarcon.tokengenerator.application.dto.jwtResponses.JWTFailedResponse;
 import com.andresalarcon.tokengenerator.application.service.IAuthService;
+import com.andresalarcon.tokengenerator.domain.SecurityUtils;
+import com.andresalarcon.tokengenerator.infrastructure.repository.InMemoryDatabase;
 import com.andresalarcon.tokengenerator.infrastructure.security.BearerUtil;
 import com.andresalarcon.tokengenerator.infrastructure.security.JwtUtil;
 
@@ -15,6 +18,7 @@ public class AuthService implements IAuthService {
 
     private final JwtUtil jwtUtil;
     private final BearerUtil bearerUtil;
+    private final InMemoryDatabase database = InMemoryDatabase.getInstance();
 
     public AuthService(JwtUtil jwtUtil, BearerUtil bearerUtil){
         this.jwtUtil = jwtUtil;
@@ -24,10 +28,14 @@ public class AuthService implements IAuthService {
     @Override
     public Object authenticateByJWT(LoginRequest request) {
 
-        if ("admin".equals(request.getUsername()) && "password".equals(request.getPassword())) 
-            return jwtUtil.generateToken(request.getUsername());        
-
-        return new JWTFailedResponse(HttpStatusCode.valueOf(401), "failed", "Credenciales incorrectas", request);
+       return database.findUserByEmail(request.getUsername())
+                .filter(user -> {
+                    String hashedInputPassword = SecurityUtils.hashPassword(request.getPassword(), user.getSalt());
+                    return user.getPasswordHash().equals(hashedInputPassword);
+                })
+                .map(user -> jwtUtil.generateToken(user.getEmail()))
+                .orElseGet(() -> new JWTFailedResponse(HttpStatus.UNAUTHORIZED, "failed", "Credenciales incorrectas", request));
+    
     }
 
     @Override

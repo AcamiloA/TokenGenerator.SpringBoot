@@ -5,7 +5,7 @@ spring:
     name: TokenGenerator
 jwt:
   secret: N3t4mX7E4QkgN6SX5e1Px7j8HMGsyGVK68775bPQqhkqLrPqN36iNBpv4VLPWfcGf6dhm1nRNmdM1xu3M19smTYj34JV5GPFMCi19XFVZ9kfibYhNk7j58KCLKB3C5P6
-  expiration: 3600000 
+  expiration: 15000 
   type: JWT
 bearer:
   secret-key: Q599gWR7C118g69CjgnPrHsD8PApz6J6Hr9xC7FQNsMP2D2LuaVaxrJNp8aC75pTer122xc9JkiD5ez99LTX46kYfdjhqTKdgSW4bu5DGgqGu4D542vH781g7GiUnUdB

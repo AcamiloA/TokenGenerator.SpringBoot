@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @Tag(name = "Authentication", description = "Endpoints relacionados con autenticación")
 public class AuthController {
     private final IAuthService authService;
@@ -42,13 +42,11 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/bearer")
-    @Operation(summary = "Generar un Bearer Token Seguro", description = "Crea un token UUID firmado con HMAC-SHA256.")
-    @ApiResponse(responseCode = "200", description = "Autenticación exitosa", content = @Content(schema = @Schema(implementation = JWTSuccessResponse.class)))
-    public ResponseEntity<?> generarBearer() {
+    // @PostMapping("/bearer")
+    // @Operation(summary = "Generar un Bearer Token Seguro", description = "Crea un token UUID firmado con HMAC-SHA256.")
+    // @ApiResponse(responseCode = "200", description = "Autenticación exitosa", content = @Content(schema = @Schema(implementation = JWTSuccessResponse.class)))
+    // public ResponseEntity<?> generarBearer() {
 
-        return ResponseEntity.status(200).body(authService.authenticateByBearer());
-    }
-    
-    
+    //     return ResponseEntity.status(200).body(authService.authenticateByBearer());
+    // }
 }

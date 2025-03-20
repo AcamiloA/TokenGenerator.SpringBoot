@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.andresalarcon.tokengenerator.application.dto.jwtResponses.JWTSuccessResponse;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -42,5 +44,13 @@ public class JwtUtil {
                 .compact();
 
         return new JWTSuccessResponse(HttpStatusCode.valueOf(200), "success", "Autenticación correcta", token, (jwtProperties.getExpiration() / 1000));
+    }
+
+    public Claims validateToken(String token) throws ExpiredJwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
