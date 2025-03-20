@@ -4,4 +4,5 @@ import com.andresalarcon.tokengenerator.application.dto.LoginRequest;
 
 public interface IAuthService {
     Object authenticateByJWT(LoginRequest request);
+    Object authenticateByBearer();
 }
